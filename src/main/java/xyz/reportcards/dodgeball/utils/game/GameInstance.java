@@ -9,7 +9,6 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.scheduler.BukkitTask;
 import xyz.reportcards.dodgeball.Dodgeball;
 import xyz.reportcards.dodgeball.models.Arena;
@@ -88,7 +87,7 @@ public class GameInstance {
         delete();
     }
 
-    private void gameEnded() {
+    private void setupGameEnd() {
         if (status != GameStatus.ENDED) {
             return;
         }
@@ -97,11 +96,8 @@ public class GameInstance {
             Map<Team, Integer> teamAlive = new HashMap<>();
             for (UUID alivePlayer : alive) {
                 Player player = Bukkit.getPlayer(alivePlayer);
-                if (player == null) {
-                    continue;
-                }
                 Team team = getTeamOfPlayer(alivePlayer);
-                if (team == null) {
+                if (player == null || team == null) {
                     continue;
                 }
                 teamAlive.put(team, teamAlive.getOrDefault(team, 0) + 1);
@@ -121,11 +117,11 @@ public class GameInstance {
             return;
         }
 
-
+        // TODO: End Game
 
     }
 
-    public boolean addPlayer(Player player) {
+    public boolean addPlayer(Player player) { // TODO: Implement teams and team balancing
         if (status != GameStatus.WAITING || getAllPlayers().contains(player.getUniqueId()) || alive.size() >= arena.getConfig().getMaxPlayers()) {
             return false;
         }
@@ -246,7 +242,7 @@ public class GameInstance {
             if (getAlive().size() < 2 || timer == 0) {
                 // Stop the timer
                 status = GameStatus.ENDED;
-                gameEnded();
+                setupGameEnd();
                 timer = 10;
                 gameBossBar.name(MiniMessage.miniMessage().deserialize("<blue>Ending In " + timer + " Seconds..."));
                 gameBossBar.progress((float) (20 - timer) / 10);

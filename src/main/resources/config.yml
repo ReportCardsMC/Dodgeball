@@ -1,0 +1,44 @@
+database:
+  enabled: false
+  connection-uri: "mongodb://localhost"
+  db: "dodgeball"
+
+config:
+  prefix: "<dark_red><bold>DODGEBALL<reset>" # The prefix used in most of the plugin messages
+  sidebar: true # Whether the plugins side bar is enabled or not
+  bossbar: true # Whether the plugins boss bar is enabled or not
+  actionbar: true # Whether the plugins action bar (For queue countdown) is used
+
+lobby:
+  world: "world" # The lobby world
+  location: # The location of the lobby
+    x: 0.0
+    y: 50.0
+    z: 0.0
+
+arenas:
+  default:
+    enabled: true # Whether the arena is enabled
+    max-players: 20 # Max players in the arena
+    balls-per-player: 1 # Amount of balls per player
+    death-y: 61 # Y level where players will be deemed dead
+    world: "default" # World name to copy from
+    teams: # list of teams in this arena
+      red:
+        display: "<red>Red"
+      blue:
+        display: "<blue>Blue"
+    locations:
+      waiting: # The pre-game lobby location
+        x: 0.0
+        y: 50.0
+        z: 0.0
+      spawns: # The spawn locations for teams
+        red:
+          x: 100.0
+          y: 50.0
+          z: 100.0
+        blue:
+          x: 100.0
+          y: 50.0
+          z: 120.0

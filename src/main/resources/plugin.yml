@@ -1,0 +1,6 @@
+name: Dodgeball
+version: '${project.version}'
+main: xyz.reportcards.dodgeball.Dodgeball
+api-version: 1.19
+depend: [Multiverse-Core]
+softdepend: [PlaceholderAPI]

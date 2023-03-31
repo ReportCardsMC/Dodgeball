@@ -10,10 +10,18 @@ import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import xyz.reportcards.dodgeball.commands.ArenaCommand;
+import xyz.reportcards.dodgeball.listeners.GameListeners;
+import xyz.reportcards.dodgeball.listeners.PlayerListeners;
 import xyz.reportcards.dodgeball.utils.Configuration;
 import xyz.reportcards.dodgeball.utils.Logging;
 import xyz.reportcards.dodgeball.utils.game.GameHandler;
 
+/**
+ * TODO: Remove/modify all logs
+ * TODO: Command on victory
+ * TODO: Placeholders
+ * TODO: Win summary
+ */
 public final class Dodgeball extends JavaPlugin {
 
     public Configuration config;
@@ -35,6 +43,8 @@ public final class Dodgeball extends JavaPlugin {
             return;
         }
         worldManager = getPlugin(MultiverseCore.class).getMVWorldManager();
+        getServer().getPluginManager().registerEvents(new GameListeners(), this);
+        getServer().getPluginManager().registerEvents(new PlayerListeners(), this);
 
         getServer().getScheduler().runTaskLater(this, () -> { // This is due to an issue with worlds loading after the plugin, so this does all startup setup 1 tick after startup
             config = new Configuration(this);

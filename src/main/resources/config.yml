@@ -1,13 +1,5 @@
-database:
-  enabled: false
-  connection-uri: "mongodb://localhost"
-  db: "dodgeball"
-
 config:
   prefix: "<dark_red><bold>DODGEBALL<reset>" # The prefix used in most of the plugin messages
-  sidebar: true # Whether the plugins side bar is enabled or not
-  bossbar: true # Whether the plugins boss bar is enabled or not
-  actionbar: true # Whether the plugins action bar (For queue countdown) is used
 
 lobby:
   world: "world" # The lobby world

@@ -48,8 +48,12 @@ public class GameHandler {
      * @param player Player to find the game from
      * @return GameInstance the player is in
      */
-    GameInstance findGameFromPlayer(Player player) {
-        String gameID = player.getMetadata("dodgeballGame").get(0).asString();
+    public GameInstance findGameFromPlayer(Player player) {
+        var metadataValue = player.getMetadata("dodgeballGame");
+        if (metadataValue.isEmpty()) {
+            return null;
+        }
+        String gameID = metadataValue.get(0).asString();
         if ("".equals(gameID)) {
             return null;
         }
@@ -62,7 +66,7 @@ public class GameHandler {
      * @param player Player to find the game from
      * @return GameInstance the player is in
      */
-    GameInstance findGameFromPlayer(UUID player) {
+    public GameInstance findGameFromPlayer(UUID player) {
         Player bukkitPlayer = Bukkit.getPlayer(player);
         if (bukkitPlayer == null) {
             return null;

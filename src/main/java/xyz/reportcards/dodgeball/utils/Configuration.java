@@ -8,7 +8,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import xyz.reportcards.dodgeball.models.Arena;
 import xyz.reportcards.dodgeball.models.ArenaConfiguration;
-import xyz.reportcards.dodgeball.models.DatabaseConfiguration;
 import xyz.reportcards.dodgeball.models.Team;
 
 import java.util.ArrayList;
@@ -18,8 +17,6 @@ import java.util.Map;
 
 public class Configuration {
     @Getter
-    private final DatabaseConfiguration databaseConfiguration;
-    @Getter
     private final Plugin plugin;
     @Getter
     private final FileConfiguration config;
@@ -27,12 +24,6 @@ public class Configuration {
     private final Location lobbyLocation;
     @Getter
     private final String prefix;
-    @Getter
-    private final boolean sidebarEnabled;
-    @Getter
-    private final boolean bossbarEnabled;
-    @Getter
-    private final boolean actionbarEnabled;
     @Getter
     Map<String, Arena> arenas;
 
@@ -42,17 +33,8 @@ public class Configuration {
         config = plugin.getConfig();
         arenas = new HashMap<>();
 
-        databaseConfiguration = DatabaseConfiguration.builder()
-                .enabled(config.getBoolean("database.enabled", false))
-                .uri(config.getString("database.connection-uri", "mongodb://localhost"))
-                .database(config.getString("database.db", "dodgeball"))
-                .build();
-
 
         prefix = config.getString("config.prefix", "<dark_red><bold>DODGEBALL<reset>");
-        sidebarEnabled = config.getBoolean("config.sidebar", true);
-        bossbarEnabled = config.getBoolean("config.bossbar", true);
-        actionbarEnabled = config.getBoolean("config.actionbar", true);
 
         lobbyLocation = getLocation(config.getString("lobby.world", "world"), "lobby.location");
 
@@ -164,6 +146,13 @@ public class Configuration {
         double x = config.getDouble("%s.x".formatted(configPath));
         double y = config.getDouble("%s.y".formatted(configPath));
         double z = config.getDouble("%s.z".formatted(configPath));
+
+        if (config.isDouble("%s.pitch".formatted(configPath)) && config.isDouble("%s.yaw".formatted(configPath))) {
+            float pitch = (float) config.getDouble("%s.pitch".formatted(configPath));
+            float yaw = (float) config.getDouble("%s.yaw".formatted(configPath));
+            Logging.log("Pitch and yaw are set for path \"%s\"".formatted(configPath));
+            return new Location(worldObject, x, y, z, yaw, pitch);
+        }
 
         return new Location(worldObject, x, y, z);
     }

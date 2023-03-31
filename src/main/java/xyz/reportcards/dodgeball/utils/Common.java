@@ -1,5 +1,11 @@
 package xyz.reportcards.dodgeball.utils;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import xyz.reportcards.dodgeball.Dodgeball;
+
 import java.util.Random;
 
 public class Common {
@@ -36,6 +42,19 @@ public class Common {
         int mins = remainder / 60;
         int secs = remainder - mins * 60;
         return (hours > 0 ? hours + "h " : "") + (mins > 0 ? mins + "m " : "") + secs + "s";
+    }
+
+    public static ItemStack dodgeballItem() {
+        ItemStack item = new ItemStack(Material.SNOWBALL);
+        var meta = item.getItemMeta();
+        meta.displayName(MiniMessage.miniMessage().deserialize("<gold>Ball"));
+        item.setItemMeta(meta);
+        return item;
+    }
+
+    public static void sendMessage(Player player, String message) {
+        String prefix = Dodgeball.getInstance().getConfiguration().getPrefix();
+        player.sendMessage(MiniMessage.miniMessage().deserialize(prefix + "<reset> " + message));
     }
 
 }

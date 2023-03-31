@@ -1,5 +1,6 @@
 package xyz.reportcards.dodgeball.utils;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -55,6 +56,10 @@ public class Common {
     public static void sendMessage(Player player, String message) {
         String prefix = Dodgeball.getInstance().getConfiguration().getPrefix();
         player.sendMessage(MiniMessage.miniMessage().deserialize(prefix + "<reset> " + message));
+    }
+
+    public static String parsePlaceholders(Player player, String message) {
+        return PlaceholderAPI.setPlaceholders(player, message);
     }
 
 }

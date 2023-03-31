@@ -18,8 +18,6 @@ import xyz.reportcards.dodgeball.utils.game.GameHandler;
 
 /**
  * TODO: Remove/modify all logs
- * TODO: Command on victory
- * TODO: Placeholders
  * TODO: Win summary
  */
 public final class Dodgeball extends JavaPlugin {
@@ -29,6 +27,8 @@ public final class Dodgeball extends JavaPlugin {
     private MVWorldManager worldManager;
     @Getter
     private GameHandler gameHandler;
+    @Getter
+    private boolean placeholderEnabled = false;
 
     @Override
     public void onEnable() {
@@ -52,8 +52,9 @@ public final class Dodgeball extends JavaPlugin {
             if(getServer().getPluginManager().getPlugin("PlaceholderAPI") == null) {
                 Logging.error("Dodgeball#onEnable", "PlaceholderAPI isn't on the server, placeholders will not be registered.");
             } else {
-                // Add placeholderapi service
                 Logging.log("Loading PlaceholderAPI utils");
+                placeholderEnabled = true;
+                new DodgeballPapiExpansion().register();
             }
 
             for (World world : Bukkit.getWorlds()) {

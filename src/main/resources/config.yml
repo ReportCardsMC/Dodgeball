@@ -15,6 +15,7 @@ arenas:
     balls-per-player: 1 # Amount of balls per player
     death-y: 61 # Y level where players will be deemed dead
     world: "default" # World name to copy from
+    command: "eco add %player_name% 100" # Command to run on win, supports PlaceholderAPI
     teams: # list of teams in this arena
       red:
         display: "<red>Red"

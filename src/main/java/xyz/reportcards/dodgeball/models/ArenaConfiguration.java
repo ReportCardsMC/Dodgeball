@@ -28,4 +28,7 @@ public class ArenaConfiguration {
     Location lobbyLocation;
     @Getter
     Map<Team, Location> teamSpawns;
+
+    @Getter
+    String victoryCommand;
 }

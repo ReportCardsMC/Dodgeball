@@ -166,6 +166,14 @@ public class GameInstance {
             return;
         }
 
+        for (UUID uuid : teams.get(winningTeam)) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) {
+                continue;
+            }
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), Common.parsePlaceholders(player, arena.getConfig().getVictoryCommand()));
+        }
+
         winGame(winningTeam);
 
     }

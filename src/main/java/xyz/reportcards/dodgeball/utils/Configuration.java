@@ -151,7 +151,6 @@ public class Configuration {
         if (config.isDouble("%s.pitch".formatted(configPath)) && config.isDouble("%s.yaw".formatted(configPath))) {
             float pitch = (float) config.getDouble("%s.pitch".formatted(configPath));
             float yaw = (float) config.getDouble("%s.yaw".formatted(configPath));
-            Logging.log("Pitch and yaw are set for path \"%s\"".formatted(configPath));
             return new Location(worldObject, x, y, z, yaw, pitch);
         }
 

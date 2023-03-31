@@ -35,9 +35,13 @@ public class GameInstance {
     @Getter
     private Map<Team, List<UUID>> teams = new HashMap<>();
     @Getter
+    private Map<String, Integer> originalTeamSize = new HashMap<>();
+    @Getter
     private List<UUID> alive = new ArrayList<>();
     @Getter
     private List<UUID> dead = new ArrayList<>();
+    @Getter
+    private Map<UUID, Integer> killMap = new HashMap<>();
     @Getter
     private GameStatus status;
     private BossBar gameBossBar;
@@ -119,6 +123,9 @@ public class GameInstance {
     }
 
     private void delete() {
+        for (UUID player : getAllPlayers()) {
+            removePlayer(player);
+        }
         if (world != null) {
             Dodgeball.getInstance().getWorldManager().deleteWorld(world.getName());
         }
@@ -163,6 +170,15 @@ public class GameInstance {
         }
         if (winningTeam == null) {
             tieGame();
+            for (UUID uuid : getAllPlayers()) {
+                Player player = Bukkit.getPlayer(uuid);
+                if (player == null) {
+                    continue;
+                }
+                for (String line : gameSummary(null)) {
+                    player.sendMessage(MiniMessage.miniMessage().deserialize(line));
+                }
+            }
             return;
         }
 
@@ -189,6 +205,45 @@ public class GameInstance {
         }
     }
 
+    private String[] gameSummary(Team winner) {
+        List<String> summary = new ArrayList<>();
+        summary.add("<gray><b>»</b> <yellow>Game Summary:");
+        summary.add("<st>" + " ".repeat(30) + "</st>");
+        summary.add("");
+        if (winner != null) {
+            summary.add("<gray><b>»</b> <yellow>Winner:<white> " + winner.getDisplayName());
+        } else {
+            summary.add("<gray><b>»</b> <yellow>Winner:<white> None");
+        }
+        summary.add("<gray><b>»</b> <yellow>Alive Players:<white> " + alive.size() + "/" + getAllPlayers().size());
+        for (Map.Entry<Team, List<UUID>> entry : teams.entrySet()) {
+            int teamAlive = 0;
+            for (UUID uuid : entry.getValue()) {
+                if (alive.contains(uuid)) {
+                    teamAlive++;
+                }
+            }
+            summary.add("<gray><b>»</b> <yellow>" + entry.getKey().getDisplayName() + "<yellow>:<white> " + teamAlive + "/" + entry.getValue().size());
+        }
+        // get top killer
+        UUID topKiller = null;
+        int topKills = 0;
+        if (!killMap.isEmpty()) {
+            for (Map.Entry<UUID, Integer> entry : killMap.entrySet()) {
+                if (entry.getValue() > topKills) {
+                    topKills = entry.getValue();
+                    topKiller = entry.getKey();
+                }
+            }
+        }
+        if (topKiller != null) {
+            summary.add("");
+            summary.add("<gray><b>»</b> <yellow>Top Killer:<white> " + Bukkit.getOfflinePlayer(topKiller).getName() + " (" + topKills + ")");
+        }
+
+        return summary.toArray(new String[0]);
+    }
+
     private void winGame(Team team) {
         for (UUID uuid : getAllPlayers()) {
             Player player = Bukkit.getPlayer(uuid);
@@ -201,6 +256,9 @@ public class GameInstance {
             } else {
                 player.sendMessage(MiniMessage.miniMessage().deserialize("<blue>Your team has lost the game!"));
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+            }
+            for (String line : gameSummary(team)) {
+                player.sendMessage(MiniMessage.miniMessage().deserialize(line));
             }
         }
     }
@@ -239,6 +297,7 @@ public class GameInstance {
             }
             loopPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<red>" + player.getName() + " <gray>was killed by <red>" + killer.getName() + "<gray>."));
         }
+        killMap.put(killer.getUniqueId(), killMap.getOrDefault(killer.getUniqueId(), 0) + 1);
         Particles.deathParticles(player);
         Sounds.playDeathCrackSound(player);
         alive.remove(player.getUniqueId());
@@ -290,6 +349,14 @@ public class GameInstance {
             loopPlayer.sendMessage(MiniMessage.miniMessage().deserialize("<red>" + player.getName() + " <gray>has died."));
         }
         removePlayer(player);
+    }
+
+    public boolean removePlayer(UUID player) {
+        Player playerBukkit = Bukkit.getPlayer(player);
+        if (playerBukkit == null) {
+            return false;
+        }
+        return removePlayer(playerBukkit);
     }
 
     public boolean removePlayer(Player player) {
@@ -365,6 +432,7 @@ public class GameInstance {
                 // Block one more below
                 blockBelow = blockBelow.getRelative(BlockFace.DOWN);
             }
+
             if (blockBelow.getType() == Material.OBSIDIAN) {
                 // Push towards their team spawn
                 Team team = getTeamOfPlayer(player.getUniqueId());
@@ -404,6 +472,11 @@ public class GameInstance {
                 timer = 300;
                 gameBossBar.name(MiniMessage.miniMessage().deserialize("<blue>Time Remaining: " + Common.convertSecondsToTimespan(timer)));
                 gameBossBar.progress(1.0f);
+                originalPlayerCount = getAlive().size();
+                // setup original team sized
+                for (Map.Entry<Team, List<UUID>> team : teams.entrySet()) {
+                    originalTeamSize.put(team.getKey().getId(), team.getValue().size());
+                }
                 gameStarted();
                 return;
             }
@@ -412,7 +485,6 @@ public class GameInstance {
             gameBossBar.name(MiniMessage.miniMessage().deserialize("<blue>Starting In " + timer + " Seconds..."));
             gameBossBar.progress((float) (20 - timer) / 20);
         } else if (status == GameStatus.STARTED) {
-
             if (getAlive().size() < 2 || timer == 0) {
                 // Stop the timer
                 status = GameStatus.ENDED;

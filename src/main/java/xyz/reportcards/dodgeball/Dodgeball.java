@@ -16,10 +16,6 @@ import xyz.reportcards.dodgeball.utils.Configuration;
 import xyz.reportcards.dodgeball.utils.Logging;
 import xyz.reportcards.dodgeball.utils.game.GameHandler;
 
-/**
- * TODO: Remove/modify all logs
- * TODO: Win summary
- */
 public final class Dodgeball extends JavaPlugin {
 
     public Configuration config;

@@ -485,7 +485,25 @@ public class GameInstance {
             gameBossBar.name(MiniMessage.miniMessage().deserialize("<blue>Starting In " + timer + " Seconds..."));
             gameBossBar.progress((float) (20 - timer) / 20);
         } else if (status == GameStatus.STARTED) {
-            if (getAlive().size() < 2 || timer == 0) {
+            // get team with alive count
+            boolean teamWithAllDead = false;
+            teamLoop:for (Map.Entry<Team, List<UUID>> team : teams.entrySet()) {
+                int notAlive = 0;
+                for (UUID uuid : team.getValue()) {
+                    if (alive.contains(uuid)) {
+                        continue teamLoop;
+                    } else {
+                        notAlive++;
+                    }
+
+                    if (notAlive == team.getValue().size()) {
+                        teamWithAllDead = true;
+                        break teamLoop;
+                    }
+                }
+            }
+
+            if (teamWithAllDead || getAlive().size() < 2 || timer == 0) {
                 // Stop the timer
                 status = GameStatus.ENDED;
                 setupGameEnd();

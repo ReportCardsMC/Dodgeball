@@ -215,7 +215,7 @@ public class GameInstance {
         } else {
             summary.add("<gray><b>»</b> <yellow>Winner:<white> None");
         }
-        summary.add("<gray><b>»</b> <yellow>Alive Players:<white> " + alive.size() + "/" + getAllPlayers().size());
+        summary.add("<gray><b>»</b> <yellow>Alive Players:<white> " + alive.size() + "/" + getOriginalPlayerCount());
         for (Map.Entry<Team, List<UUID>> entry : teams.entrySet()) {
             int teamAlive = 0;
             for (UUID uuid : entry.getValue()) {
@@ -223,7 +223,7 @@ public class GameInstance {
                     teamAlive++;
                 }
             }
-            summary.add("<gray><b>»</b> <yellow>" + entry.getKey().getDisplayName() + "<yellow>:<white> " + teamAlive + "/" + entry.getValue().size());
+            summary.add("<gray><b>»</b> <yellow>" + entry.getKey().getDisplayName() + "<yellow>:<white> " + teamAlive + "/" + originalTeamSize.get(entry.getKey().getId()));
         }
         // get top killer
         UUID topKiller = null;

@@ -33,7 +33,7 @@ public class ArenaCommand extends BaseCommand {
             return;
         }
 
-        if (gameInstance.getStatus() != GameStatus.WAITING) {
+        if (gameInstance.getStatus() != GameStatus.WAITING && gameInstance.getStatus() != GameStatus.STARTING) {
             Common.sendMessage(player, "<red>The game has already started!");
             return;
         }

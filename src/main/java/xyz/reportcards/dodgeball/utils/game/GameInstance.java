@@ -272,7 +272,7 @@ public class GameInstance {
     }
 
     public boolean addPlayer(Player player) { // TODO: Implement teams and team balancing
-        if (status != GameStatus.WAITING || getAllPlayers().contains(player.getUniqueId()) || alive.size() >= arena.getConfig().getMaxPlayers()) {
+        if ((status != GameStatus.WAITING && status != GameStatus.STARTING) || getAllPlayers().contains(player.getUniqueId()) || alive.size() >= arena.getConfig().getMaxPlayers()) {
             return false;
         }
         alive.add(player.getUniqueId());

@@ -41,7 +41,7 @@ public class GameListeners implements Listener {
                                 ((Player) Objects.requireNonNull(event.getEntity().getShooter())).getInventory().addItem(Common.dodgeballItem());
                             }
                             item.remove();
-
+                            task.cancel();
                         }
                     }, 5, 5);
                 }

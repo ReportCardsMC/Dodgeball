@@ -82,7 +82,7 @@ public class GameHandler {
     public GameInstance findOpenGame() {
         GameInstance game = null;
         for (GameInstance gameInstance : instances.values()) {
-            if (gameInstance.getStatus() == GameStatus.WAITING) {
+            if (gameInstance.getStatus() == GameStatus.WAITING || gameInstance.getStatus() == GameStatus.STARTING) {
                 if (game == null) {
                     game = gameInstance;
                 } else {
@@ -108,7 +108,7 @@ public class GameHandler {
 
         GameInstance game = null;
         for (GameInstance gameInstance : instances.values()) {
-            if (gameInstance.getStatus() == GameStatus.WAITING && gameInstance.getArena().getConfig().getName().equals(arena)) {
+            if ((gameInstance.getStatus() == GameStatus.WAITING  || gameInstance.getStatus() == GameStatus.STARTING) && gameInstance.getArena().getConfig().getName().equals(arena)) {
                 if (game == null) {
                     game = gameInstance;
                 } else {

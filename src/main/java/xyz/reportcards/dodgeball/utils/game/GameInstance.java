@@ -250,15 +250,15 @@ public class GameInstance {
             if (player == null) {
                 continue;
             }
-            if (getTeamOfPlayer(uuid).equals(team)) {
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<blue>Your team has won the game!"));
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-            } else {
-                player.sendMessage(MiniMessage.miniMessage().deserialize("<blue>Your team has lost the game!"));
-                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-            }
             for (String line : gameSummary(team)) {
                 player.sendMessage(MiniMessage.miniMessage().deserialize(line));
+            }
+            if (getTeamOfPlayer(uuid).equals(team)) {
+                player.sendMessage(MiniMessage.miniMessage().deserialize("<green>Your team has won the game!"));
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+            } else {
+                player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Your team has lost the game!"));
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
             }
         }
     }
